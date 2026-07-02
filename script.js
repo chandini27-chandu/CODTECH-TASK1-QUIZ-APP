@@ -171,58 +171,31 @@ let currentQuestionIndex = 0;
 let score = 0;
 let userName = "";
 
-const welcomeScreen =
-document.getElementById("welcomeScreen");
+const welcomeScreen = document.getElementById("welcomeScreen");
+const quizScreen = document.getElementById("quizScreen");
+const resultScreen = document.getElementById("resultScreen");
 
-const quizScreen =
-document.getElementById("quizScreen");
+const startBtn = document.getElementById("startBtn");
+const restartBtn = document.getElementById("restartBtn");
 
-const resultScreen =
-document.getElementById("resultScreen");
+const questionElement = document.getElementById("question");
+const answerButtons = document.getElementById("answer-buttons");
+const nextBtn = document.getElementById("next-btn");
 
-const startBtn =
-document.getElementById("startBtn");
+const feedback = document.getElementById("feedback");
+const progressBar = document.getElementById("progress-bar");
 
-const restartBtn =
-document.getElementById("restartBtn");
+document.getElementById("total-questions").innerText = quizData.length;
 
-const questionElement =
-document.getElementById("question");
+startBtn.addEventListener("click", startQuiz);
 
-const answerButtons =
-document.getElementById("answer-buttons");
-
-const nextBtn =
-document.getElementById("next-btn");
-
-const feedback =
-document.getElementById("feedback");
-
-const progressBar =
-document.getElementById("progress-bar");
-
-document.getElementById(
-"total-questions"
-).innerText = quizData.length;
-
-startBtn.addEventListener(
-"click",
-startQuiz
-);
-
-restartBtn.addEventListener(
-"click",
-() => {
+restartBtn.addEventListener("click", () => {
 location.reload();
-}
-);
+});
 
 function startQuiz(){
 
-userName =
-document.getElementById(
-"username"
-).value.trim();
+userName = document.getElementById("username").value.trim();
 
 if(userName===""){
 alert("Please enter your name");
@@ -242,169 +215,135 @@ function showQuestion(){
 
 resetState();
 
-let currentQuestion =
-quizData[currentQuestionIndex];
+let currentQuestion = quizData[currentQuestionIndex];
 
-document.getElementById(
-"current-question"
-).innerText =
+document.getElementById("current-question").innerText =
 currentQuestionIndex + 1;
 
-questionElement.innerText =
-currentQuestion.question;
+questionElement.innerText = currentQuestion.question;
 
 let progress =
-(currentQuestionIndex /
-quizData.length) * 100;
+((currentQuestionIndex + 1) / quizData.length) * 100;
 
-progressBar.style.width =
-progress + "%";
+progressBar.style.width = progress + "%";
 
-currentQuestion.answers.forEach(
-(answer,index)=>{
+currentQuestion.answers.forEach((answer,index)=>{
 
-const button =
-document.createElement("button");
+const button=document.createElement("button");
 
-button.innerText = answer;
+button.innerText=answer;
 
 button.classList.add("btn");
 
-button.addEventListener(
-"click",
-()=>selectAnswer(index)
-);
+button.addEventListener("click",()=>selectAnswer(index));
 
 answerButtons.appendChild(button);
 
 });
+
 }
 
 function resetState(){
 
 feedback.innerText="";
-
 nextBtn.style.display="none";
 
 while(answerButtons.firstChild){
-answerButtons.removeChild(
-answerButtons.firstChild
-);
+answerButtons.removeChild(answerButtons.firstChild);
 }
+
 }
 
 function selectAnswer(selectedIndex){
 
-const correctIndex =
-quizData[currentQuestionIndex].correct;
+const correctIndex = quizData[currentQuestionIndex].correct;
 
-const buttons =
-answerButtons.children;
+const buttons = answerButtons.children;
 
 for(let i=0;i<buttons.length;i++){
 
 if(i===correctIndex){
-buttons[i].classList.add(
-"correct"
-);
+buttons[i].classList.add("correct");
 }
 
-if(
-i===selectedIndex &&
-selectedIndex!==correctIndex
-){
-buttons[i].classList.add(
-"wrong"
-);
+if(i===selectedIndex && selectedIndex!==correctIndex){
+buttons[i].classList.add("wrong");
 }
 
 buttons[i].disabled=true;
+
 }
 
 if(selectedIndex===correctIndex){
 
 score++;
+feedback.innerText="✅ Correct Answer!";
 
-feedback.innerText =
-"✅ Correct Answer!";
 }
 else{
 
-feedback.innerText =
-"❌ Wrong Answer!";
+feedback.innerText="❌ Wrong Answer!";
+
 }
 
-nextBtn.style.display="block";
-}
-
-nextBtn.addEventListener(
-"click",
-()=>{
+setTimeout(()=>{
 
 currentQuestionIndex++;
 
-if(
-currentQuestionIndex <
-quizData.length
-){
+if(currentQuestionIndex<quizData.length){
+
 showQuestion();
-}
-else{
-showResult();
-}
 
 }
-);
+else{
+
+showResult();
+
+}
+
+},1000);
+
+}
 
 function showResult(){
 
 quizScreen.style.display="none";
 resultScreen.style.display="flex";
 
-let percentage =
-((score/quizData.length)*100)
-.toFixed(2);
+let percentage=((score/quizData.length)*100).toFixed(2);
 
-document.getElementById(
-"resultName"
-).innerText =
+document.getElementById("resultName").innerText =
 `Congratulations, ${userName}!`;
 
-document.getElementById(
-"finalScore"
-).innerText =
+document.getElementById("finalScore").innerText =
 `Score: ${score} / ${quizData.length}`;
 
-document.getElementById(
-"percentage"
-).innerText =
+document.getElementById("percentage").innerText =
 `Percentage: ${percentage}%`;
 
 let message="";
 
 if(percentage>=90){
 
-message =
-"🌟 Outstanding! You have excellent Front-End Development knowledge.";
+message="🌟 Outstanding! You have excellent Front-End Development knowledge.";
+
 }
 else if(percentage>=70){
 
-message =
-"🎉 Great Job! Your Front-End Development skills are strong.";
+message="🎉 Great Job! Your Front-End Development skills are strong.";
+
 }
 else if(percentage>=50){
 
-message =
-"👍 Good effort! Keep practicing HTML, CSS, JavaScript and React.";
+message="👍 Good effort! Keep practicing HTML, CSS, JavaScript and React.";
+
 }
 else{
 
-message =
-"💪 You tried your best. Practice regularly and improve your Front-End skills.";
+message="💪 You tried your best. Practice regularly and improve your Front-End skills.";
+
 }
 
-document.getElementById(
-"performanceMessage"
-).innerText =
-message;
+document.getElementById("performanceMessage").innerText = message;
+
 }
